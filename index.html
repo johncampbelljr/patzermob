@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<title>Community Chess</title>
+	<script src="js/ChessFen.js" type="text/javascript" ></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" ></script>
+	</head>
+	<body>
+		<p></p>
+		<div id="board"></div>
+		<form>
+			<input type="text" name="from" id="from"/>
+			<input type="text" name="to" id="to"/>
+			<input type="button" name="move" id="move" />
+		</form>
+	</body>
+<script>
+$(function() {
+	var chessObj = new DHTMLGoodies.ChessFen();
+	$.ajax({
+	  url: 'ajax/board',
+	    success: function(data) {
+			chessObj.loadFen(data.board,'board');
+		}
+	});
+	$('#move').click(function() {
+		$.post("ajax/move", { from: $('#from').val(), to: $('#to').val() } );
+	});
+});
+</script>
+</html>
