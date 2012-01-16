@@ -1,3 +1,6 @@
 [submodule "lib/node-static"]
 	path = lib/node-static
 	url = https://github.com/cloudhead/node-static.git
+[submodule "lib/chess"]
+	path = lib/chess
+	url = https://github.com/johncampbelljr/chess.js.git
