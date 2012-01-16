@@ -1,0 +1,5 @@
+patzermob is (trying) to be a coop chess match played by two teams of chess players.  
+Each player gets to vote on the next move.
+
+This is an on-going experiment wherein I'm trying out new stuff, like node.js, when.js,
+module loading, etc.
