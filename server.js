@@ -4,7 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var url = require("url");
 var ch = require('./chess')
-var static = require('./lib/node-static');
+var static = require('node-static');
 var sys = require('util');
 var querystring = require('querystring')
 
