@@ -14,7 +14,7 @@ setInterval(winning_move,10000);
 
 var file = new(static.Server)('.', { cache: 7200, headers: {'X-Hello':'World!'} });
 
-http.createServer(function (request, response) {
+var app = http.createServer(function (request, response) {
  
     console.log('request starting [' + request.url + ']');
     var myurl = url.parse(request.url, true);  
@@ -62,7 +62,15 @@ http.createServer(function (request, response) {
     }
     
     loadStatic(request, response);
-}).listen(8125);
+});
+
+var io = require('socket.io').listen(app);
+
+app.listen(8125);
+
+io.sockets.on( 'connection', function ( socket ) {
+    socket.volatile.emit( 'notification' , "hello world" );
+});
 
 function make_move(){
 	var winning_move = winning_move();
@@ -84,7 +92,8 @@ function winning_move()
 	}
 
 	if ( winning_move.length == 0 ) {
-		winning_move.push(chess.moves()[0]);
+		var moves = chess.moves();
+		winning_move.push(moves[Math.floor(Math.random()*moves.length)]);
 	}
 	console.log('winning move = ' + winning_move[Math.floor(Math.random()*winning_move.length)]);
 	var move_key = winning_move[Math.floor(Math.random()*winning_move.length)];
@@ -93,6 +102,10 @@ function winning_move()
 	chess.move(move_key);
 	post_move();
 	console.log(chess.ascii());
+	var return_obj = {
+                board : chess.fen()
+                };
+	io.sockets.emit('move_complete',return_obj);
 }
 
 function post_move()
