@@ -10,7 +10,7 @@ var querystring = require('querystring')
 
 var chess = new ch.Chess();
 var votes = Array();
-setInterval(winning_move,30000);
+setInterval(winning_move,10000);
 
 var file = new(static.Server)('.', { cache: 7200, headers: {'X-Hello':'World!'} });
 
@@ -84,14 +84,13 @@ function winning_move()
 	}
 
 	if ( winning_move.length == 0 ) {
-		console.log('.');
-		return;
+		winning_move.push(chess.moves()[0]);
 	}
 	console.log('winning move = ' + winning_move[Math.floor(Math.random()*winning_move.length)]);
 	var move_key = winning_move[Math.floor(Math.random()*winning_move.length)];
 	console.log("from=" + move_key.substring(0,2)+ " to=" + move_key.substring(2,4));
 	var move = { from : move_key.substring(0,2), to: move_key.substring(2,4)};
-	chess.move(move);
+	chess.move(move_key);
 	post_move();
 	console.log(chess.ascii());
 }
