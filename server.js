@@ -11,6 +11,7 @@ var querystring = require('querystring')
 var chess = new ch.Chess();
 var votes = Array();
 var total_votes = 0;
+var winning_to = "";
 setInterval(winning_move,10000);
 
 var file = new(static.Server)('.', { cache: 7200, headers: {'X-Hello':'World!'} });
@@ -83,7 +84,8 @@ function get_game_info() {
 		inCheckmate: chess.in_checkmate(),
 		inStalemate: chess.in_stalemate(),
 		turn: chess.turn(),
-		vote_count: total_votes
+		vote_count: total_votes,
+		winning_to: winning_to
                 };
 	return return_obj;
 }
@@ -112,11 +114,13 @@ function winning_move()
 	if ( winning_move.length == 0 ) {
 		var moves = chess.moves();
 		winning_move.push(moves[Math.floor(Math.random()*moves.length)]);
+		winning_to = winning_move[0];
 		chess.move(winning_move[0]);
 	} else {
 		var move_key = winning_move[Math.floor(Math.random()*winning_move.length)];
 		var move = { from : move_key.substring(0,2), to: move_key.substring(2,4), promotion: 'q'};
 		var rv = chess.move(move);
+		winning_to = move_key.substring(2,4);	
 		console.log(rv);
 	}
 	post_move();

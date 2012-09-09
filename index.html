@@ -99,6 +99,7 @@
 	<div id="check"></div>
 	<div id="mate"></div>
 	<div id="list"></div>
+	<div id="winning_to"></div>
 </div>
 </body>
 <script>
@@ -138,9 +139,27 @@ function makeMove(event) {
 	  url: url,
 	  data: "from=" + from.toLowerCase() +"&to=" + $(event.target).attr("id").toLowerCase() + "&promotion=q",
 	  success: function(data) {
+		unHighlight();	
+		var char = $("#" + from).text();
+		$("#" + from).text("");
+		$(event.target).text(char);
+		$(event.target).attr("style","background-image: none; background-color: rgb(0, 255, 0);");
+		highlightList.push($(event.target));
 	  }
 	});
-	unHighlight();	
+}
+
+function extractAlegraCoord(move)
+{
+	list += move + " ";
+	var clean = move.replace(/#/g,"").replace(/\+/g,"").replace(/Q/g,"").replace(/\=/g,"");
+	if (clean == "O-O") {
+		clean = "g1";
+	}
+	if (clean == "O-O-O") {
+		clean = "c1";
+	}
+	return clean.substr(clean.length-2);
 }
 
 function fromMoveClick(event)
@@ -154,16 +173,7 @@ function fromMoveClick(event)
 	var list = "";	
 	var moves = chess.moves({ target: $(event.target).attr("id").toLowerCase()});
 	for(move in moves) {
-		var clean = moves[move].replace(/#/g,"").replace(/\+/g,"").replace(/Q/g,"").replace(/\=/g,"");
-		list += " " + moves[move];
-		if (clean == "O-O") {
-			clean = "g1";
-		}
-		if (clean == "O-O-O") {
-			clean = "c1";
-		}
-		var id = "#" + clean.substr(clean.length-2)
-		target = $(id.toUpperCase());
+		target = getSquare(extractAlegraCoord(moves[move]));
 		target.attr("style","background-image: none; background-color: rgb(255, 255, 161);");
 		target.click(makeMove);
 		highlightList.push(target);
@@ -197,6 +207,11 @@ function updateInfo(data)
 		$("#mate").text("");
 	}
 }
+function getSquare(algebraCoords)
+{
+	return $("#" + algebraCoords.toUpperCase());
+}
+
 $(function() {
 	$('td').addClass('piece');
 	$.ajax({
@@ -211,8 +226,12 @@ $(function() {
 		updateInfo(data);
       	});
       	socket.on('move_complete', function (data) {
+		unHighlight();
 		updateInfo(data);
 		displayFen(data.board);
+		var clean = extractAlegraCoord(data.winning_to);
+		$('#winning_to').text(data.winning_to + ":" + clean);
+		getSquare(clean).effect("highlight", {color: "#ff0000"}, 1000);
       	});
 	socket.on('vote_update', function(data) {
 		updateInfo(data);
