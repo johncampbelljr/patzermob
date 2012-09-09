@@ -8,7 +8,21 @@
 	text-shadow:0 1px #fff;
 	width:60px;
 }
-#chess_board { border:5px solid #333; }
+
+#board_container {
+	width: 50%; float: left;
+}
+
+#info_container {
+	font-size:200%;
+	width: 40%; float: right;
+}
+
+#chess_board { 
+	border:5px solid #333; 
+	display:inline-table; i
+}
+
 #chess_board td {
 	background:#fff;
 	background:-moz-linear-gradient(top, #fff, #eee);

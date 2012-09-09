@@ -10,6 +10,7 @@ var querystring = require('querystring')
 
 var chess = new ch.Chess();
 var votes = Array();
+var total_votes = 0;
 setInterval(winning_move,10000);
 
 var file = new(static.Server)('.', { cache: 7200, headers: {'X-Hello':'World!'} });
@@ -26,9 +27,10 @@ var app = http.createServer(function (request, response) {
         request.addListener('data', function(chunk){
 	        POST += chunk;
 	}).addListener('end', function(){
+		console.log("POST = " + POST);
 		move = querystring.parse(POST);
 		move_key = move['from'] + move['to'];
-		console.log(move_key);
+		console.log("move_key=" + move_key);
    	
 	var legal_move = chess.check_move(move);
 	var vote_count = -1;	
@@ -47,6 +49,8 @@ var app = http.createServer(function (request, response) {
 	};
     	response.writeHead(200, {'Content-Type': 'application/json'});
       	response.end(JSON.stringify(return_obj));
+	total_votes++;
+	io.sockets.emit('vote_update',{vote_count: total_votes});
 	});
 	return;
     }
@@ -69,8 +73,20 @@ var io = require('socket.io').listen(app);
 app.listen(8125);
 
 io.sockets.on( 'connection', function ( socket ) {
-    socket.volatile.emit( 'notification' , "hello world" );
+    socket.volatile.emit( 'notification' , get_game_info());
 });
+
+function get_game_info() {
+	var return_obj = {
+                board : chess.fen(),
+		inCheck : chess.in_check(),
+		inCheckmate: chess.in_checkmate(),
+		inStalemate: chess.in_stalemate(),
+		turn: chess.turn(),
+		vote_count: total_votes
+                };
+	return return_obj;
+}
 
 function make_move(){
 	var winning_move = winning_move();
@@ -82,6 +98,7 @@ function winning_move()
 {
 	var winning_total = 0;
 	var winning_move = new Array(); // capture ties
+	console.log('votes' + votes.length);
 	for(var move in votes)
 	{
 		var total = votes[move];
@@ -91,21 +108,25 @@ function winning_move()
 		}
 	}
 
+	// if there is no winning move, just do a random move
 	if ( winning_move.length == 0 ) {
 		var moves = chess.moves();
 		winning_move.push(moves[Math.floor(Math.random()*moves.length)]);
+		chess.move(winning_move[0]);
+	} else {
+		var move_key = winning_move[Math.floor(Math.random()*winning_move.length)];
+		var move = { from : move_key.substring(0,2), to: move_key.substring(2,4), promotion: 'q'};
+		var rv = chess.move(move);
+		console.log(rv);
 	}
-	console.log('winning move = ' + winning_move[Math.floor(Math.random()*winning_move.length)]);
-	var move_key = winning_move[Math.floor(Math.random()*winning_move.length)];
-	console.log("from=" + move_key.substring(0,2)+ " to=" + move_key.substring(2,4));
-	var move = { from : move_key.substring(0,2), to: move_key.substring(2,4)};
-	chess.move(move_key);
 	post_move();
 	console.log(chess.ascii());
-	var return_obj = {
-                board : chess.fen()
-                };
-	io.sockets.emit('move_complete',return_obj);
+	total_votes = 0;
+	io.sockets.emit('move_complete',get_game_info());
+	if ( chess.game_over() )
+	{
+		chess.reset();
+	}
 }
 
 function post_move()
