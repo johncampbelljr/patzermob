@@ -1,5 +1,11 @@
 patzermob is (trying) to be a coop chess match played by two teams of chess players.  
 Each player gets to vote on the next move.
 
-This is an on-going experiment wherein I'm trying out new stuff, like node.js, when.js,
-module loading, etc.
+This is an on-going experiment wherein I'm trying out new stuff, currently using node.js, a couple node modules, socket.io, jquery.
+
+ToDo:
+Clean up the node server code.
+Clean up the client js code.  (probably should move it to a js file.)
+Display better info about the current game--current participates, countdown to next move, etc.
+Maybe use knockout or backbone to bind game data to the display.
+Animate the move.
