@@ -81,7 +81,8 @@ app.listen(port);
 io.sockets.on( 'connection', function ( socket ) {
     var info = get_game_info();
     info.color = get_new_player_color();    
-    socket.volatile.emit( 'join_game' , info);
+    //socket.volatile.emit( 'join_game' , info);
+    socket.emit( 'join_game' , info);
     socket.on('disconnect', function() {
     });
 });

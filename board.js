@@ -122,13 +122,12 @@ function createBoard(is_white)
 
 $(function() {
 	
-	var socket = io.connect('http://secure-wave-5245.herokuapp.com/');
+	var socket = io.connect('secure-wave-5245.herokuapp.com');
       	socket.on('join_game', function (data) {
 		side = data.color;
 		createBoard(side === 'w');	
 		updateInfo(data);
 		displayFen(data.board);
-      	});
       	
 	socket.on('move_complete', function (data) {
 		unHighlight();
@@ -143,6 +142,7 @@ $(function() {
 		updateInfo(data);
 		$("#vote_count").text("Vote Count: " + data.vote_count);
 	});
+      	});
 });
 
 function displayFen(fenString) {
