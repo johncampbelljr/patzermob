@@ -1,31 +1,3 @@
-<html>
-	<head>
-		<title>Community Chess</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" ></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-		<script src="chess/chess.js" type="text/javascript" ></script>
-		<script src="socket.io/socket.io.js"></script>
-		<script src="board.js"></script>
-		<link rel="stylesheet" type="text/css" href="board.css" />
-	</head>
-	<body>
-<!-- grabbed the chess board from http://designindevelopment.com/css/css3-chess-board/ -->
-<div id="board_container">
-	<table id="chess_board" cellpadding="0" cellspacing="0">
-	<tbody></tbody>
-	</table>
-</div>
-<div id="info_container">
-	<div id="turn"></div>
-	<div id="vote_count"></div>
-	<div id="check"></div>
-	<div id="mate"></div>
-	<div id="list"></div>
-	<div id="winning_to"></div>
-</div>
-</body>
-<script>
-
 var fenChars = "KQRBNPkqrbnp";
 var colChars = "ABCDEFGH";
 var chess = new Chess();
@@ -103,13 +75,15 @@ function fromMoveClick(event)
 	$("#list").text(list);
 }
 
-var side = 'w';
+var side = '';
 
 function isMyPiece(fenPiece)
 {
 	var whitePieces = "KQRBNP";
-	return (whitePieces.match(fenPiece) && side == 'w' );
+	var is_white_piece = whitePieces.match(fenPiece);
+	return side === 'w' ? is_white_piece : !is_white_piece;
 }
+
 function updateInfo(data)
 {
 		if ( data.turn == 'b' ) {
@@ -134,20 +108,29 @@ function getSquare(algebraCoords)
 	return $("#" + algebraCoords.toUpperCase());
 }
 
-$(function() {
-	$('td').addClass('piece');
-	$.ajax({
-	  url: 'ajax/board',
-	    	success: function(data) {
-			displayFen(data.board);
-		}
-	});
 
+function createBoard(is_white)
+{
+	for(var rank = 1; rank < 9; rank++) {
+		var tr = $('#chess_board tbody:last').append("<tr>");
+		for(var file = 0; file < 8; file++) {
+			var td = '<td id = "'+ colChars[is_white ? file : 7 - file ] + (is_white ? 9-rank : rank) + '" class="piece"></td>';
+			$('#chess_board tr:last').append(td);
+		}
+	}
+}
+
+$(function() {
+	
 	var socket = io.connect('http://localhost');
-      	socket.on('notification', function (data) {
+      	socket.on('join_game', function (data) {
+		side = data.color;
+		createBoard(side === 'w');	
 		updateInfo(data);
+		displayFen(data.board);
       	});
-      	socket.on('move_complete', function (data) {
+      	
+	socket.on('move_complete', function (data) {
 		unHighlight();
 		updateInfo(data);
 		displayFen(data.board);
@@ -155,6 +138,7 @@ $(function() {
 		$('#winning_to').text(data.winning_to + ":" + clean);
 		getSquare(clean).effect("highlight", {color: "#ff0000"}, 1000);
       	});
+
 	socket.on('vote_update', function(data) {
 		updateInfo(data);
 		$("#vote_count").text("Vote Count: " + data.vote_count);
@@ -185,4 +169,3 @@ function displayFen(fenString) {
 		}
 	});
 }
-</html>

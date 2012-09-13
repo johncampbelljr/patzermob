@@ -74,8 +74,17 @@ var io = require('socket.io').listen(app);
 app.listen(8125);
 
 io.sockets.on( 'connection', function ( socket ) {
-    socket.volatile.emit( 'notification' , get_game_info());
+    var info = get_game_info();
+    info.color = get_new_player_color();    
+    socket.volatile.emit( 'join_game' , info);
+    socket.on('disconnect', function() {
+    });
 });
+
+function get_new_player_color()
+{	
+	return Math.round(Math.random()) ? 'w' : 'b';
+}
 
 function get_game_info() {
 	var return_obj = {
@@ -150,4 +159,3 @@ function loadStatic(request,response) {
 	}
 	});
 } 
-console.log('Server running at http://127.0.0.1:8125/');
