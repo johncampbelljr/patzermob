@@ -12,7 +12,7 @@ var chess = new ch.Chess();
 var votes = Array();
 var total_votes = 0;
 var winning_to = "";
-setInterval(winning_move,10000);
+setInterval(winning_move,20000);
 
 var file = new(static.Server)('.', { cache: 7200, headers: {'X-Hello':'World!'} });
 
@@ -70,8 +70,8 @@ var app = http.createServer(function (request, response) {
 });
 
 var io = require('socket.io').listen(app);
-
-app.listen(8125);
+var port = process.env.PORT || 5000;
+app.listen(port);
 
 io.sockets.on( 'connection', function ( socket ) {
     var info = get_game_info();
