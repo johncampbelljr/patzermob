@@ -15,7 +15,7 @@
 
 #info_container {
 	font-size:200%;
-	width: 40%; float: right;
+	width: 40%; float: left;
 }
 
 #chess_board { 

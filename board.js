@@ -125,6 +125,7 @@ $(function() {
 	var socket = io.connect('secure-wave-5245.herokuapp.com');
       	socket.on('join_game', function (data) {
 		side = data.color;
+		$("#header").text("You are playing " + data.color === 'w' ? "White" : "Black");
 		createBoard(side === 'w');	
 		updateInfo(data);
 		displayFen(data.board);
