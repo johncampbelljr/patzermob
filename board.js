@@ -122,7 +122,7 @@ function createBoard(is_white)
 
 $(function() {
 	
-	var socket = io.connect('http://localhost');
+	var socket = io.connect('http://patzermob.herokuapp.com/');
       	socket.on('join_game', function (data) {
 		side = data.color;
 		createBoard(side === 'w');	
