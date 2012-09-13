@@ -9,3 +9,8 @@ Clean up the client js code.  (probably should move it to a js file.)
 Display better info about the current game--current participates, countdown to next move, etc.
 Maybe use knockout or backbone to bind game data to the display.
 Animate the move.
+Fix the black castle issue (it highlights the white squares)
+Fix the problem with showin gthe castle moves even when it is not a valid move.
+Move the rook on a castle pending move.
+Make board.js a module.
+Use require/cujo to load modules.
