@@ -13,6 +13,10 @@
 	width: 50%; float: left;
 }
 
+#header {
+	font-size:200%;
+}
+
 #info_container {
 	font-size:200%;
 	width: 40%; float: left;
