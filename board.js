@@ -1,21 +1,19 @@
 var fenChars = "KQRBNPkqrbnp";
 var colChars = "ABCDEFGH";
 var chess = new Chess();
+var side = '';
+var highlightList = [];
+var from;
+var sec_remaining;
+
+function isPlayingWhite() {
+	return side === 'w';
+}
 
 function getChessFontCharFromFen(fenChar) {
 	return String.fromCharCode(9812 + this.fenChars.indexOf(fenChar));
 }
 
-// state when waiting for the other side to move
-function awaitingMove() {
-}
-
-function postMove() {
-}
-
-var highlightList = [];
-
-var from;
 function unHighlight()
 {
 	for(hl in highlightList) {
@@ -48,10 +46,10 @@ function extractAlegraCoord(move)
 	list += move + " ";
 	var clean = move.replace(/#/g,"").replace(/\+/g,"").replace(/Q/g,"").replace(/\=/g,"");
 	if (clean == "O-O") {
-		clean = "g1";
+		clean = isPlayingWhite() ? "g1" : "g8";
 	}
 	if (clean == "O-O-O") {
-		clean = "c1";
+		clean = isPlayingWhite() ? "c1" : "c8";
 	}
 	return clean.substr(clean.length-2);
 }
@@ -75,39 +73,46 @@ function fromMoveClick(event)
 	$("#list").text(list);
 }
 
-var side = '';
+function tick()
+{
+	$('#timer').text(sec_remaining);
+	sec_remaining--;
+}
 
 function isMyPiece(fenPiece)
 {
 	var whitePieces = "KQRBNP";
 	var is_white_piece = whitePieces.match(fenPiece);
-	return side === 'w' ? is_white_piece : !is_white_piece;
+	return isPlayingWhite() ? is_white_piece : !is_white_piece;
 }
 
 function updateInfo(data)
 {
-		if ( data.turn == 'b' ) {
-			$("#turn").text("Turn: Black");
-		} else {
-			$("#turn").text("Turn: White");
-		}
-		$("#vote_count").text("Vote Count: " + data.vote_count);
+	sec_remaining = data.sec_remaining;
+	if ( data.turn == 'b' ) {
+		$("#turn").text("Black");
+	} else {
+		$("#turn").text("White");
+	}
+	$("#vote_count").text("Vote Count: " + data.vote_count);
+	
 	if ( data.inCheck ) {
 		$("#check").text("CHECK");
 	} else {
 		$("#check").text("");
 	}
+	
 	if ( data.inCheckmate ) {
 		$("#mate").text("CHECKMATE");
 	} else {
 		$("#mate").text("");
 	}
 }
+
 function getSquare(algebraCoords)
 {
 	return $("#" + algebraCoords.toUpperCase());
 }
-
 
 function createBoard(is_white)
 {
@@ -122,7 +127,9 @@ function createBoard(is_white)
 
 $(function() {
 	
+      	setInterval(tick,1000);
 	var socket = io.connect('secure-wave-5245.herokuapp.com');
+	//var socket = io.connect('localhost');
       	socket.on('join_game', function (data) {
 		side = data.color;
 		$("#header").text("You are playing " + (data.color === 'w' ? "White" : "Black"));
@@ -135,12 +142,10 @@ $(function() {
 		updateInfo(data);
 		displayFen(data.board);
 		var clean = extractAlegraCoord(data.winning_to);
-		$('#winning_to').text(data.winning_to + ":" + clean);
 		getSquare(clean).effect("highlight", {color: "#ff0000"}, 1000);
       	});
 
 	socket.on('vote_update', function(data) {
-		updateInfo(data);
 		$("#vote_count").text("Vote Count: " + data.vote_count);
 	});
       	});

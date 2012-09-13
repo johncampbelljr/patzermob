@@ -10,16 +10,24 @@
 }
 
 #board_container {
-	width: 50%; float: left;
+	width: 480px ;
+  	margin-left: auto ;
+  	margin-right: auto ;
 }
 
 #header {
 	font-size:200%;
+	width: 480px ;
+  	margin-left: auto ;
+  	margin-right: auto ;
+  	text-align: center;
 }
 
 #info_container {
 	font-size:200%;
-	width: 40%; float: left;
+	width: 480px ;
+  	margin-left: auto ;
+  	margin-right: auto ;
 }
 
 #chess_board { 

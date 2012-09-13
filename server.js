@@ -12,7 +12,19 @@ var chess = new ch.Chess();
 var votes = Array();
 var total_votes = 0;
 var winning_to = "";
-setInterval(winning_move,20000);
+var side_time = 20;
+var current_sec_remaining = side_time;
+setInterval(tick,1000);
+
+function tick()
+{
+	current_sec_remaining--;
+	if ( current_sec_remaining <= 0 ) {
+		current_sec_remaining = side_time;
+		winning_move();
+	}
+}
+
 
 var file = new(static.Server)('.', { cache: 7200, headers: {'X-Hello':'World!'} });
 
@@ -46,10 +58,11 @@ var app = http.createServer(function (request, response) {
 	var return_obj = {
 		valid : legal_move,
 		move : move,
-		vote_count : vote_count
+		vote_count : vote_count,
+		sec_remaining: current_sec_remaining
 	};
-    	response.writeHead(200, {'Content-Type': 'application/json'});
-      	response.end(JSON.stringify(return_obj));
+	response.writeHead(200, {'Content-Type': 'application/json'});
+    response.end(JSON.stringify(return_obj));
 	total_votes++;
 	io.sockets.emit('vote_update',{vote_count: total_votes});
 	});
@@ -94,13 +107,14 @@ function get_new_player_color()
 
 function get_game_info() {
 	var return_obj = {
-                board : chess.fen(),
+        board : chess.fen(),
 		inCheck : chess.in_check(),
 		inCheckmate: chess.in_checkmate(),
 		inStalemate: chess.in_stalemate(),
 		turn: chess.turn(),
 		vote_count: total_votes,
-		winning_to: winning_to
+		winning_to: winning_to,
+		sec_remaining: current_sec_remaining
                 };
 	return return_obj;
 }
