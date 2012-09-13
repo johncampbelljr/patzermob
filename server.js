@@ -70,6 +70,11 @@ var app = http.createServer(function (request, response) {
 });
 
 var io = require('socket.io').listen(app);
+io.configure(function () { 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10); 
+});
+
 var port = process.env.PORT || 5000;
 app.listen(port);
 
