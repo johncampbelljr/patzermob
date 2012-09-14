@@ -12,3 +12,5 @@ Fix the problem with showin gthe castle moves even when it is not a valid move.
 Move the rook on a castle pending move.
 Make board.js a module.
 Use require/cujo to load modules.
+Keep people from voting more than once.
+Refactor the backend to support multiple games. (So when it hits big we can scale.)
