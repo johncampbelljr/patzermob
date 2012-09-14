@@ -4,8 +4,9 @@ Each player gets to vote on the next move.
 This is an on-going experiment wherein I'm trying out new stuff, currently using node.js, a couple node modules, socket.io, jquery.
 
 ToDo:
+Have an endgame state that shows the end of the game, pauses for a turn and then starts a new game.
 Clean up the node server code.
-Clean up the client js code.  (probably should move it to a js file.)
+Clean up the client js code, maybe make it a module (whatever that is).
 Maybe use knockout or backbone to bind game data to the display.
 Animate the move.
 Fix the problem with showin gthe castle moves even when it is not a valid move.
