@@ -15,3 +15,5 @@ Make board.js a module.
 Use require/cujo to load modules.
 Keep people from voting more than once.
 Refactor the backend to support multiple games. (So when it hits big we can scale.)
+Add Unit Test
+Get rid of the case sensitivity with the chess board.
