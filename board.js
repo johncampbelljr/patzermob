@@ -24,21 +24,68 @@ function unHighlight()
 	highlightList = [];
 }
 
-function makeMove(event) {
-	var url = 'ajax/move';
+function detectPromotion(from, to)
+{
+	var piece = $("#" + from.toUpperCase()).text();
+	// is it a pawn?
+	if (piece == String.fromCharCode(9817) || piece == String.fromCharCode(9823)) {
+		var rank = $(event.target).attr("id").match(/[1-8]/);
+		if ( (isPlayingWhite() && rank == '8') || (!isPlayingWhite() && rank == '1')) {
+			$( "#promotion-dialog" ).dialog({
+			resizable: false,
+			height:140,
+			modal: true,
+			open: function(event, ui) {
+				var queen = isPlayingWhite() ? "Q" : "q";
+				var rook = isPlayingWhite() ? "N" : "n";
+				$("#queen").text(getChessFontCharFromFen(queen))
+				.click(function() {
+					sendMove(from, to, "q");
+					$("#promotion-dialog").dialog('close');
+				}); 
+				$("#knight").text(getChessFontCharFromFen(rook))
+				.click(function() {
+					sendMove(from, to, "n");
+					$("#promotion-dialog").dialog('close');
+				}); 
+			}
+			});
+			return true;			
+		}
+	}
+	return false;
+}
+
+function sendMove(from, to, promotion) {
+	// format data
+	var data = "from=" + from +"&to=" + to;
+	if ( promotion ) {
+		data += "&promotion=" + promotion;
+	}
 	$.ajax({
 	  type: 'POST',
-	  url: url,
-	  data: "from=" + from.toLowerCase() +"&to=" + $(event.target).attr("id").toLowerCase() + "&promotion=q",
+	  url: 'ajax/move',
+	  data: data,
 	  success: function(data) {
 		unHighlight();	
-		var char = $("#" + from).text();
-		$("#" + from).text("");
-		$(event.target).text(char);
-		$(event.target).attr("style","background-image: none; background-color: rgb(0, 255, 0);");
-		highlightList.push($(event.target));
+		var fromObj = $("#" + from.toUpperCase());
+		var char = fromObj.text();
+		if ( promotion ) {
+			var promChar = isPlayingWhite() ? promotion.toUpperCase() : promotion;
+			char = getChessFontCharFromFen(promChar);
+		}
+		fromObj.text("");
+		var toObj = $("#" + to.toUpperCase());
+		toObj.text(char);
+		toObj.attr("style","background-image: none; background-color: rgb(0, 255, 0);");
+		highlightList.push(toObj);
 	  }
 	});
+}
+
+function makeMove(event) {
+	if ( detectPromotion(from.toLowerCase(), $(event.target).attr("id").toLowerCase()) ) return;
+	sendMove(from.toLowerCase(), $(event.target).attr("id").toLowerCase());
 }
 
 function extractAlegraCoord(move)
@@ -96,17 +143,14 @@ function updateInfo(data)
 	}
 	$("#vote_count").text("Vote Count: " + data.vote_count);
 	
+	$("#check").text("");
 	if ( data.inCheck ) {
 		$("#check").text("CHECK");
-	} else {
-		$("#check").text("");
-	}
+	} 
 	
 	if ( data.inCheckmate ) {
-		$("#mate").text("CHECKMATE");
-	} else {
-		$("#mate").text("");
-	}
+		$("#check").text("CHECKMATE");
+	} 
 }
 
 function getSquare(algebraCoords)
@@ -137,18 +181,37 @@ $(function() {
 		updateInfo(data);
 		displayFen(data.board);
       	
-	socket.on('move_complete', function (data) {
-		unHighlight();
-		updateInfo(data);
-		displayFen(data.board);
-		var clean = extractAlegraCoord(data.winning_to);
-		getSquare(clean).effect("highlight", {color: "#ff0000"}, 1000);
-      	});
+		socket.on('move_complete', function (data) {
+			unHighlight();
+			updateInfo(data);
+			displayFen(data.board);
+			var clean = extractAlegraCoord(data.winning_to);
+			getSquare(clean).effect("highlight", {color: "#ff0000"}, 1000);
+			});
 
-	socket.on('vote_update', function(data) {
-		$("#vote_count").text("Vote Count: " + data.vote_count);
-	});
+		socket.on('vote_update', function(data) {
+			$("#vote_count").text("Vote Count: " + data.vote_count);
+			});
       	});
+      	$("#dialogtest").click(function() {
+      	$( "#promotion-dialog" ).dialog({
+			resizable: false,
+			height:140,
+			modal: true,
+			open: function(event, ui) {
+				var queen = isPlayingWhite() ? "Q" : "q";
+				var rook = isPlayingWhite() ? "N" : "n";
+				$("#queen").text(getChessFontCharFromFen(queen))
+				.click(function(){
+					$("#promotion-dialog").dialog('close');
+				}); 
+				$("#rook").text(getChessFontCharFromFen(rook))
+				.click(function(){
+					$("#promotion-dialog").dialog('close');
+				}); 
+			}
+		});
+		});
 });
 
 function displayFen(fenString) {

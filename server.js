@@ -42,7 +42,9 @@ var app = http.createServer(function (request, response) {
 	}).addListener('end', function(){
 		console.log("POST = " + POST);
 		move = querystring.parse(POST);
-		move_key = move['from'] + move['to'];
+		var promotion = typeof move['promotion'] !== 'undefined' ? move['promotion'] : "";
+		move_key = move['from'] + move['to'] + promotion;
+		
 		console.log("move_key=" + move_key);
    	
 	var legal_move = chess.check_move(move);
@@ -147,7 +149,7 @@ function winning_move()
 		chess.move(winning_move[0]);
 	} else {
 		var move_key = winning_move[Math.floor(Math.random()*winning_move.length)];
-		var move = { from : move_key.substring(0,2), to: move_key.substring(2,4), promotion: 'q'};
+		var move = { from : move_key.substring(0,2), to: move_key.substring(2,4), promotion: move_key.substring(4,5)};
 		var rv = chess.move(move);
 		winning_to = move_key.substring(2,4);	
 		console.log(rv);
