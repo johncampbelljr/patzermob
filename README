@@ -16,5 +16,5 @@ Animate the move.
 Make board.js a module.
 Use require/cujo to load modules.
 Refactor the backend to support multiple games. (So when it hits big we can scale.)
-Add Unit Test
-Get rid of the case sensitivity with the chess board.
+Add Unit Tests
+Get rid of the case sensitivity with the chess board (internal code).
