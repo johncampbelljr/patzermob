@@ -4,16 +4,16 @@ Each player gets to vote on the next move.
 This is an on-going experiment wherein I'm trying out new stuff, currently using node.js, a couple node modules, socket.io, jquery.
 
 ToDo:
-Have an endgame state that shows the end of the game, pauses for a turn and then starts a new game.
+*Have an endgame state that shows the end of the game, pauses for a turn and then starts a new game.
+*Fix the problem with showing the castle moves even when it is not a valid move.
+*Move the rook on a castle pending move.
+*Keep people from voting more than once.
 Clean up the node server code.
 Clean up the client js code, maybe make it a module (whatever that is).
 Maybe use knockout or backbone to bind game data to the display.
 Animate the move.
-Fix the problem with showin gthe castle moves even when it is not a valid move.
-Move the rook on a castle pending move.
 Make board.js a module.
 Use require/cujo to load modules.
-Keep people from voting more than once.
 Refactor the backend to support multiple games. (So when it hits big we can scale.)
 Add Unit Test
 Get rid of the case sensitivity with the chess board.

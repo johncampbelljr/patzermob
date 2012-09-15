@@ -193,25 +193,6 @@ $(function() {
 			$("#vote_count").text("Vote Count: " + data.vote_count);
 			});
       	});
-      	$("#dialogtest").click(function() {
-      	$( "#promotion-dialog" ).dialog({
-			resizable: false,
-			height:140,
-			modal: true,
-			open: function(event, ui) {
-				var queen = isPlayingWhite() ? "Q" : "q";
-				var rook = isPlayingWhite() ? "N" : "n";
-				$("#queen").text(getChessFontCharFromFen(queen))
-				.click(function(){
-					$("#promotion-dialog").dialog('close');
-				}); 
-				$("#rook").text(getChessFontCharFromFen(rook))
-				.click(function(){
-					$("#promotion-dialog").dialog('close');
-				}); 
-			}
-		});
-		});
 });
 
 function displayFen(fenString) {
