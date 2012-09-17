@@ -148,9 +148,15 @@ function updateInfo(data)
 		$("#check").text("CHECK");
 	} 
 	
-	if ( data.inCheckmate ) {
-		$("#check").text("CHECKMATE");
-	} 
+	if ( data.inCheckmate || data.inStalemate || data.insufficient_material || data.in_threefold_repetition ) {
+		if ( data.inCheckmate ) $("#check").text("CHECKMATE");
+		if ( data.inStalemate ) $("#check").text("Stalemate");
+		if ( data.insufficient_material ) $("#check").text("Insufficient Material");
+		if ( data.in_threefold_repetition ) $("#check").text("Threefold Repetition");
+		$("#remaining").text("New Game Starting In: ");
+	} else {
+		$("#remaining").text("Time Remaining: ");
+	}
 }
 
 function getSquare(algebraCoords)
@@ -160,6 +166,7 @@ function getSquare(algebraCoords)
 
 function createBoard(is_white)
 {
+	$('#chess_board tbody').empty();
 	for(var rank = 1; rank < 9; rank++) {
 		var tr = $('#chess_board tbody:last').append("<tr>");
 		for(var file = 0; file < 8; file++) {
@@ -187,7 +194,13 @@ $(function() {
 			displayFen(data.board);
 			var clean = extractAlegraCoord(data.winning_to);
 			getSquare(clean).effect("highlight", {color: "#ff0000"}, 1000);
-			});
+		});
+
+		socket.on('new_game', function (data) {
+			unHighlight();
+			updateInfo(data);
+			displayFen(data.board);
+		});
 
 		socket.on('vote_update', function(data) {
 			$("#vote_count").text("Vote Count: " + data.vote_count);

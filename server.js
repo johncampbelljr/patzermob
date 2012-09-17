@@ -13,6 +13,7 @@ var votes = Array();
 var total_votes = 0;
 var winning_to = "";
 var side_time = 20;
+var reset_game = false;
 var current_sec_remaining = side_time;
 setInterval(tick,1000);
 
@@ -21,7 +22,15 @@ function tick()
 	current_sec_remaining--;
 	if ( current_sec_remaining <= 0 ) {
 		current_sec_remaining = side_time;
-		winning_move();
+		if ( chess.game_over() )
+		{
+			chess.reset();
+    		io.sockets.emit('new_game',get_game_info());  
+		} 
+		else 
+		{
+			winning_move();
+		}
 	}
 }
 
@@ -113,6 +122,8 @@ function get_game_info() {
 		inCheck : chess.in_check(),
 		inCheckmate: chess.in_checkmate(),
 		inStalemate: chess.in_stalemate(),
+		insufficient_material : chess.insufficient_material(),
+		in_threefold_repetition : chess.in_threefold_repetition(),
 		turn: chess.turn(),
 		vote_count: total_votes,
 		winning_to: winning_to,
@@ -154,22 +165,12 @@ function winning_move()
 		winning_to = move_key.substring(2,4);	
 		console.log(rv);
 	}
-	post_move();
+	votes = Array();
 	console.log(chess.ascii());
 	total_votes = 0;
 	io.sockets.emit('move_complete',get_game_info());
-	if ( chess.game_over() )
-	{
-		chess.reset();
-	}
 }
 
-function post_move()
-{
-	for (var i in votes) {
-		delete votes[i];
-	}
-}
 function loadStatic(request,response) {
 	file.serve(request, response, function (err, res) {
             if (err) { // An error as occured
