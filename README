@@ -6,7 +6,6 @@ This is an on-going experiment wherein I'm trying out new stuff, currently using
 ToDo:
 *Fix the problem with showing the castle moves even when it is not a valid move.
 *Move the rook on a castle pending move.
-*Keep people from voting more than once.
 *iPhone Support
 Clean up the node server code.
 Clean up the client js code, maybe make it a module (whatever that is).

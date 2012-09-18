@@ -79,6 +79,7 @@ function sendMove(from, to, promotion) {
 		toObj.text(char);
 		toObj.attr("style","background-image: none; background-color: rgb(0, 255, 0);");
 		highlightList.push(toObj);
+		$("td").off('click');
 	  }
 	});
 }
@@ -242,7 +243,6 @@ function displayFen(fenString) {
 			if ( isMyPiece(char) ) {
 				item.click(fromMoveClick);
 			}
-
 			colNo++;		
 		}
 	});
