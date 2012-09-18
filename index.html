@@ -24,7 +24,7 @@
 	</head>
 	<body>
 <!-- grabbed the chess board from http://designindevelopment.com/css/css3-chess-board/ -->
-<div id="header"></div>
+<div id="header"><span id="playerMessage"></span> <a href="#">About</a></div>
 <div id="board_container">
 	<table id="chess_board" cellpadding="0" cellspacing="0">
 	<tbody></tbody>
@@ -38,6 +38,11 @@
 </div>
 <div id="promotion-dialog" title="Select Promotion" style="text-align:center">
 <span id="queen"></span><span id="knight"></span>
+</div>
+<div id="aboutDialog">
+<p>You join the game and are assigned to either the white or black team.</p>
+<p>Each player on the team has 20 seconds to vote on what should be the next move. (You vote by simply moving a piece.)</p>
+<p>The votes are counted at the end of the turn and the move with the highest number of votes is made.</p>
 </div>
 </body>
 </html>

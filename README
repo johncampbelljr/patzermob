@@ -18,5 +18,4 @@ Refactor the backend to support multiple games. (So when it hits big we can scal
 Add Unit Test
 Get rid of the case sensitivity with the chess board.
 Add admin shutdown function--save the game to disk and read the restore the game on start-up.
-Add about box.
 Add join game dialog with nickname.

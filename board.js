@@ -179,11 +179,26 @@ function createBoard(is_white)
 $(function() {
 	
       	setInterval(tick,1000);
+      	
+      	$("a").button();
+      	$("a").click(function() {
+      		$("#aboutDialog").dialog({
+      		resizable: false,
+      		width:480,
+			height:480,
+			modal: true,
+			buttons: {
+				Ok: function() {
+					$( this ).dialog( "close" );
+				}
+			}});
+      	});
+      	
 	var socket = io.connect('secure-wave-5245.herokuapp.com');
 	//var socket = io.connect('localhost');
       	socket.on('join_game', function (data) {
 		side = data.color;
-		$("#header").text("You are playing " + (data.color === 'w' ? "White" : "Black"));
+		$("#playerMessage").text("You are playing " + (data.color === 'w' ? "White" : "Black"));
 		createBoard(side === 'w');	
 		updateInfo(data);
 		displayFen(data.board);
