@@ -181,7 +181,7 @@ $(function() {
 	
       	setInterval(tick,1000);
       	
-      	$("a").button();
+      	$("#header a").button();
       	$("a").click(function() {
       		$("#aboutDialog").dialog({
       		resizable: false,
