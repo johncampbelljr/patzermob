@@ -4,6 +4,7 @@ Each player gets to vote on the next move.
 This is an on-going experiment wherein I'm trying out new stuff, currently using node.js, a couple node modules, socket.io, jquery.
 
 ToDo:
+*redirect patzermob.com to www.patzermob.com.
 *Fix the problem with showing the castle moves even when it is not a valid move.
 *Move the rook on a castle pending move.
 *iPhone Support
