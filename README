@@ -4,6 +4,7 @@ Each player gets to vote on the next move.
 This is an on-going experiment wherein I'm trying out new stuff, currently using node.js, a couple node modules, socket.io, jquery.
 
 ToDo:
+*Replace the countdown timer with "HURRY" when close to the end of the round (to mask the time sync problem).
 *redirect patzermob.com to www.patzermob.com.
 *Fix the problem with showing the castle moves even when it is not a valid move.
 *Move the rook on a castle pending move.
