@@ -4,8 +4,8 @@
   "description": "community chess game",
   "main": "server.js",
   "dependencies": {
-    "socket.io": "~0.9.10",
-    "node-static": "~0.6.1"
+    "socket.io": "~2.4.0",
+    "node-static": "~0.7.11"
   },
   "devDependencies": {},
   "scripts": {
